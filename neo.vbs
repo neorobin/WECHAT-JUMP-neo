@@ -1,3 +1,6 @@
+' Author neorobin
+' https://github.com/neorobin/WECHAT-JUMP-neo/tree/WECHAT-JUMP-neo-%E5%8D%95%E8%BD%AE%E5%BB%93%E7%8E%AF%E7%AE%80%E6%98%93
+
 ' 作者：523066680 / vicyang
 '  https://github.com/vicyang/WeChat-JumpGame-Auto
 '  2018-01-02
@@ -5,9 +8,9 @@
 
 Dim PI = 3.1415926, two_PI = 2 * PI
 
+Dim DEBUG_SW = FALSE
+
 Dim DO_PRESS = False ' 调试用, 是否 TOUCH 屏幕的开头
-
-
 
 ' 视图中心  562.5   979
 Dim VIEW_CENT_X = 562.5
@@ -102,7 +105,7 @@ Dim jumper_head_outline_x(1000), jumper_head_outline_y(1000)
 
 
 
-Dim Jumper_header = {"x":-1, "y":-1}
+Dim Jumper_header = {"x":-1, "y":-1}, Jumper_foot = {"x":-1, "y":-1}
 ' CALL locate_Jumper_header(Jumper_header)
 ' say "locate_Jumper_header Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
 ' say "Jumper foot 坐标在" & Jumper_header["x"] & "," & (Jumper_header["y"] + Jumper_Height)
@@ -112,6 +115,34 @@ Dim Jumper = {"x":-1, "y":-1}
 ' say "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
 
 Dim hold, foot_x, foot_y
+
+if DEBUG_SW then
+    Log.Open
+end if
+
+    ' Call locate_Jumper_header_by_cross_chord(Jumper_header)
+    ' say "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
+
+
+    ' foot_x = Jumper_header["x"]
+    ' foot_y = (Jumper_header["y"] + Jumper_Height)
+    ' say "Jumper foot 坐标在" & foot_x & "," & foot_y
+
+
+' Dim 返回值
+' 返回值=GetTempDir()
+' TracePrint "当前设备的临时目录为：" & 返回值
+
+
+' Log.Open
+' TracePrint "日志被开启，这句话会被记录到日志文件中"
+' Log.Close
+' TracePrint "日志被关闭，这句话不会被记录到日志文件中"
+
+
+' EndScript
+
+
 
 While (False)
     ' CALL locate_Jumper(Jumper)
@@ -182,10 +213,49 @@ Dim contour_rings_pnt = 0   ' 轮廓环操作指针
 Dim SCAN_LINE_GAP = 50, SCAN_LINE_MIN_Y = 300, SCAN_LINE_MAX_Y = 1700
 
 
-Call contour()
+Dim ret_val
+' Call contour()
+
+call locate_Jumper_foot_by_cross_chord(Jumper_foot)
+
+ret_val = Locate_1st_contour_ring()
+
+if NOT ret_val then
+    say "Locate_1st_contour_ring() 失败"
+else
+    say "Locate_1st_contour_ring() 成功"
+    call draw_contour_ring(10)                ' 显示轮廓环路径
+end if
+
+while(False)
+
+    ' 搜索 Jumper 的位置
+
+    ' 搜索目标物体的位置
+
+    ' 计算并跳跃
+
+    ' 等待画面稳定
+    ' Delay 1000 + Int(Rnd() * 1500)
+wend
+
+
 
 
 EndScript
+
+
+
+
+
+
+function locate_Jumper_foot_by_cross_chord(Jumper_foot)
+    Call locate_Jumper_header_by_cross_chord(Jumper_foot)
+    Jumper_foot["y"] = Jumper_foot["y"] + Jumper_Height
+    say "Jumper_foot 坐标在" & Jumper_foot["x"] & "," & Jumper_foot["y"]
+end function
+
+
 
 ' 以此轮郭点为中心, 那个外部点为起始, 顺时针搜索邻点直至搜索到第一个内部点
 ' 这个内部点作为第2个轮廓点, 以搜索的上一个外部点为起始, 以第2个轮廓点为中心
@@ -199,6 +269,9 @@ Function search_a_contour_ring()
     Dim pos = {"x":-1, "y":-1}, center = {"x":-1, "y":-1}, test_pos = {"x":-1, "y":-1}, last_test_pos = {"x":-1, "y":-1}
     Dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}, path_HSV = {"H":0,"S":0,"V":0}
     Dim is_new_contour_pointer
+
+    search_a_contour_ring = False
+
     Call GetPixelHSV(path_HSV, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
 
     test_pos ["x"] = contour_rings_x(contour_rings_pnt) - 1
@@ -206,15 +279,15 @@ Function search_a_contour_ring()
 
     While cnt_round <= 8
 
-        ' say "contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt): " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
-        ' say "test_pos: " & test_pos["x"] & "," & test_pos["y"]
+        ' debug_msg "contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt): " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
+        ' debug_msg "test_pos: " & test_pos["x"] & "," & test_pos["y"]
         last_test_pos["x"] = test_pos["x"] :  last_test_pos["y"] = test_pos["y"]
         Call next_pos_clock_wise(test_pos, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
 
         Call GetPixelHSV(HSV, test_pos["x"], test_pos["y"])
         If Not is_HSV_DIFF(HSV, path_HSV) Then
             ' 找到一个新的轮廓点, 检测新的轮廓点是否已在轮廓环中出现
-            ' say "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
+            ' debug_msg "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
             ShowMessage "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
 
             is_new_contour_pointer = True
@@ -226,16 +299,10 @@ Function search_a_contour_ring()
             Next
             If Not is_new_contour_pointer Then
                 ' 轮廓环闭环
-                say "轮廓环闭环: " & test_pos["x"] & "," & test_pos["y"]
-
-                ' 显示轮廓环路径
-                TouchDown contour_rings_x(0), contour_rings_y(0), 1  ' 按住屏幕上的坐标不放，并设置此触点ID=1
-                For j = 0 To contour_rings_pnt step 10
-                    TouchMove contour_rings_x(j), contour_rings_y(j), 1, 0 ' 将ID=1的触点花0毫秒移动至 contour_rings_x(j), contour_rings_y(j)坐标
-                Next
-                TouchUp 1 ' 松开弹起ID=1的触点
-
-                EndScript
+                debug_msg "轮廓环闭环: " & test_pos["x"] & "," & test_pos["y"]
+                ' call draw_contour_ring(10)                ' 显示轮廓环路径
+                search_a_contour_ring = True
+                Exit Function
             End If
 
             ' 轮廓环闭环未闭环
@@ -256,10 +323,23 @@ Function search_a_contour_ring()
         End If
     Wend
     If cnt_round > 8 Then
-        say "轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环: " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
-        EndScript
+        debug_msg "轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环: " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
+        search_a_contour_ring = True
+        Exit Function
     End If
 End Function
+
+
+' 显示轮廓环路径
+function draw_contour_ring(gap)
+    dim j
+    TouchDown contour_rings_x(0), contour_rings_y(0), 1  ' 按住屏幕上的坐标不放，并设置此触点ID=1
+    For j = 0 To contour_rings_pnt step gap
+        TouchMove contour_rings_x(j), contour_rings_y(j), 1, 0 ' 将ID=1的触点花0毫秒移动至 contour_rings_x(j), contour_rings_y(j)坐标
+    Next
+    TouchUp 1 ' 松开弹起ID=1的触点
+end function
+
 
 ' 顺时针方向 以 center 为中心, pos 为起点的下一个点
 Function next_pos_clock_wise(pos, center_x, center_y)
@@ -333,32 +413,54 @@ Function contour()
         For x = 1 To screenX - 1
             Call GetPixelHSV(HSV, x, y)
             If is_HSV_DIFF(HSV, last_HSV) Then
-                say "找到轮廓点 坐标在" & x & "," & y
+                debug_msg "找到轮廓点 坐标在" & x & "," & y
                 contour_rings_x(contour_rings_pnt) = x
                 contour_rings_y(contour_rings_pnt) = y
-
                 ' Touch x, y, 1
-
 
                 Call search_a_contour_ring()
 
                 ReleaseCapture()
                 Exit Function
-
-
-
-
             Else
                 copyHSV(HSV, last_HSV)
             End If
-
         Next
-
     Next
-
     ReleaseCapture()
 End Function
 
+
+Function Locate_1st_contour_ring()
+
+    Locate_1st_contour_ring = False
+    contour_rings_pnt = 0
+
+    KeepCapture()
+    Dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}
+    For y = SCAN_LINE_MIN_Y To SCAN_LINE_MAX_Y Step SCAN_LINE_GAP
+        x = 0
+        Call GetPixelHSV(last_HSV, x, y)
+
+        For x = 1 To screenX - 1
+            Call GetPixelHSV(HSV, x, y)
+            If is_HSV_DIFF(HSV, last_HSV) Then
+                debug_msg "找到轮廓点 坐标在" & x & "," & y
+                contour_rings_x(contour_rings_pnt) = x
+                contour_rings_y(contour_rings_pnt) = y
+                ' Touch x, y, 1
+
+                ' Call search_a_contour_ring()
+                Locate_1st_contour_ring = search_a_contour_ring()
+                ReleaseCapture()
+                Exit Function
+            Else
+                copyHSV(HSV, last_HSV)
+            End If
+        Next
+    Next
+    ReleaseCapture()
+End Function
 
 
 
@@ -467,6 +569,16 @@ Function is_HSV_DIFF(HSV1, HSV2)
     End If
 End Function
 
+
+Function is_HSV_DIFF_2(HSV1, HSV2)
+    ' HSV 色差半径阀值
+    Dim H_rad = 0.09, V_rad = 10, S_rad = 0.7
+    IF ABS(HSV1["H"] - HSV2["H"]) > H_rad OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > V_rad THEN
+        is_HSV_DIFF_2 = True
+    Else
+        is_HSV_DIFF_2 = False
+    End If
+End Function
 
 
 
@@ -586,6 +698,8 @@ Function locate_Jumper_header_by_cross_chord(Jumper_header)
 
     Dim start_x, start_y, ret_val
 
+    Dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}, path_HSV = {"H":0,"S":0,"V":0}
+
     KeepCapture()
 
     ret_val = FindColor(0, 0, 0, 0, UCase(Hex(Jumper_header_center_color)) & "-080808", 0, 1, start_x, start_y)
@@ -605,18 +719,27 @@ Function locate_Jumper_header_by_cross_chord(Jumper_header)
     For j = 0 To UBound(Dir)
         x = start_x
         y = start_y
+
+        Call GetPixelHSV(last_HSV, x, y)
+
         Do
             x = x + x_dir[dir(j)]
             y = y + y_dir[dir(j)]
-            rColor = GetPixelColor(x, y, 1)
-            Call RGB2HSV(HSV, rColor)
-            if Abs(HSV["H"] - Jumper_header_center_color_H_cent) > Jumper_header_center_color_H_rad then
+            ' rColor = GetPixelColor(x, y, 1)
+            ' Call RGB2HSV(HSV, rColor)
+
+            Call GetPixelHSV(HSV, x, y)
+            debug_msg "@ coor: " & x & "," & y & ", H:" & HSV["H"] & ", S:" & HSV["S"] & ", V:" & HSV["V"]
+
+            if Abs(HSV["H"] - Jumper_header_center_color_H_cent) > Jumper_header_center_color_H_rad or is_HSV_DIFF_2(HSV, last_HSV) then
                 pos_x [dir(j)] = x
                 pos_y [dir(j)] = y
 
-                say "search 坐标在" & x & "," & y
+                debug_msg "search 坐标在" & x & "," & y
                 Exit Do
             End If
+
+            call copyHSV(HSV, last_HSV)
         Loop While True
     Next
     ReleaseCapture()
@@ -917,6 +1040,13 @@ Sub say(something)
     TracePrint something
 End Sub
 
+
+Sub debug_msg(something)
+    if DEBUG_SW then
+        ShowMessage something
+        TracePrint something
+    end if
+End Sub
 
 
 
