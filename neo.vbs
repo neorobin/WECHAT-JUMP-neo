@@ -12,11 +12,14 @@ Dim DEBUG_SW = FALSE
 
 Dim DO_PRESS = False ' 调试用, 是否 TOUCH 屏幕的开头
 
+
+
+
 ' 视图中心  562.5   979
 Dim VIEW_CENT_X = 562.5
 Dim VIEW_CENT_Y = 979
 
-Dim target_x, target_y
+Dim target_x, target_y, Target = {"x":0, "y":0}
 
 Delay 1000
 Dim x1, y1, x2, y2
@@ -24,6 +27,11 @@ Dim x1, y1, x2, y2
 Dim screenX, screenY
 screenX = GetScreenX()
 screenY = GetScreenY()
+
+
+' 轮廓环坐标极值
+dim contour_ring_min = {"x": screenX * 2, "y": screenY * 2}
+dim contour_ring_max = {"x": -screenX * 2, "y": -screenY * 2}
 
 Dim bgcolor, iter
 Dim top, bottom, centx, centy, dist
@@ -224,7 +232,14 @@ if NOT ret_val then
     say "Locate_1st_contour_ring() 失败"
 else
     say "Locate_1st_contour_ring() 成功"
-    call draw_contour_ring(10)                ' 显示轮廓环路径
+    ' call draw_contour_ring(10)                ' 显示轮廓环路径
+end if
+
+if Locate_Target(Target) then
+    say "Locate_Target(Target) 成功"
+    say "Target: " & Target["x"] & "," & Target["y"]
+else
+    say "Locate_Target(Target) 失败"
 end if
 
 while(False)
@@ -245,7 +260,21 @@ wend
 EndScript
 
 
+function Locate_Target(Target)
+    Dim ret_val
+    Locate_Target = False
 
+    ret_val = Locate_1st_contour_ring()
+    if ret_val then
+        Locate_Target = True
+
+        Target["x"] = (contour_ring_min["x"] + contour_ring_max["x"]) / 2
+        Target["y"] = (contour_ring_min["y"] + contour_ring_max["y"]) / 2
+    else
+        Target["x"] = -99
+        Target["y"] = -99
+    end if
+end function
 
 
 
@@ -272,6 +301,10 @@ Function search_a_contour_ring()
 
     search_a_contour_ring = False
 
+    ' 初始化轮廓环极值
+    contour_ring_min = {"x": screenX * 2, "y": screenY * 2}
+    contour_ring_max = {"x": -screenX * 2, "y": -screenY * 2}
+
     Call GetPixelHSV(path_HSV, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
 
     test_pos ["x"] = contour_rings_x(contour_rings_pnt) - 1
@@ -288,7 +321,21 @@ Function search_a_contour_ring()
         If Not is_HSV_DIFF(HSV, path_HSV) Then
             ' 找到一个新的轮廓点, 检测新的轮廓点是否已在轮廓环中出现
             ' debug_msg "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
-            ShowMessage "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
+            ' ShowMessage "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
+
+            ' 更新轮廓环极值
+            if test_pos["x"] < contour_ring_min["x"] then
+                contour_ring_min["x"] = test_pos["x"]
+            end if
+            if test_pos["y"] < contour_ring_min["y"] then
+                contour_ring_min["y"] = test_pos["y"]
+            end if
+            if test_pos["x"] > contour_ring_max["x"] then
+                contour_ring_max["x"] = test_pos["x"]
+            end if
+            if test_pos["y"] > contour_ring_max["y"] then
+                contour_ring_max["y"] = test_pos["y"]
+            end if
 
             is_new_contour_pointer = True
             For j = 0 To contour_rings_pnt - 1
