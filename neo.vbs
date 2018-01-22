@@ -5,13 +5,13 @@
 
 Dim PI = 3.1415926, two_PI = 2 * PI
 
-Dim DO_PRESS = false ' 调试用, 是否 TOUCH 屏幕的开头
+Dim DO_PRESS = False ' 调试用, 是否 TOUCH 屏幕的开头
 
 
 
 ' 视图中心  562.5   979
-DIM VIEW_CENT_X = 562.5
-DIM VIEW_CENT_Y = 979
+Dim VIEW_CENT_X = 562.5
+Dim VIEW_CENT_Y = 979
 
 Dim target_x, target_y
 
@@ -104,23 +104,23 @@ Dim jumper_head_outline_x(1000), jumper_head_outline_y(1000)
 
 Dim Jumper_header = {"x":-1, "y":-1}
 ' CALL locate_Jumper_header(Jumper_header)
-' SAY "locate_Jumper_header Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
-' SAY "Jumper foot 坐标在" & Jumper_header["x"] & "," & (Jumper_header["y"] + Jumper_Height)
+' say "locate_Jumper_header Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
+' say "Jumper foot 坐标在" & Jumper_header["x"] & "," & (Jumper_header["y"] + Jumper_Height)
 
 Dim Jumper = {"x":-1, "y":-1}
 ' CALL locate_Jumper(Jumper)
-' SAY "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
+' say "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
 
 Dim hold, foot_x, foot_y
 
 While (False)
     ' CALL locate_Jumper(Jumper)
-    ' SAY "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
+    ' say "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
     ' Touch Jumper["x"], Jumper["y"], 1
 
 
     Call locate_Jumper_header_by_cross_chord(Jumper_header)
-    SAY "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
+    say "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
 
 
     foot_x = Jumper_header["x"]
@@ -179,10 +179,10 @@ Dim x, y, rColor
 Dim contour_rings_x(10000), contour_rings_y(10000)
 Dim contour_rings_pnt = 0   ' 轮廓环操作指针
 
-dim SCAN_LINE_GAP = 50, SCAN_LINE_MIN_Y = 300, SCAN_LINE_MAX_Y = 1700
+Dim SCAN_LINE_GAP = 50, SCAN_LINE_MIN_Y = 300, SCAN_LINE_MAX_Y = 1700
 
 
-call contour()
+Call contour()
 
 
 EndScript
@@ -194,51 +194,53 @@ EndScript
 ' 直到再次搜索到第1个轮廓点, 轮廓闭合, 结束
 ' 第一个轮廓点由 contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt) 指出
 ' contour_rings_x(contour_rings_pnt) - 1, contour_rings_y(contour_rings_pnt) 为第一个外部点
-function search_a_contour_ring()
-    dim cnt_round = 0   ' 轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环
-    dim pos = {"x":-1, "y":-1}, center = {"x":-1, "y":-1}, test_pos = {"x":-1, "y":-1}, last_test_pos = {"x":-1, "y":-1}
-    dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}, path_HSV = {"H":0,"S":0,"V":0}
-    dim is_new_contour_pointer
+Function search_a_contour_ring()
+    Dim cnt_round = 0   ' 轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环
+    Dim pos = {"x":-1, "y":-1}, center = {"x":-1, "y":-1}, test_pos = {"x":-1, "y":-1}, last_test_pos = {"x":-1, "y":-1}
+    Dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}, path_HSV = {"H":0,"S":0,"V":0}
+    Dim is_new_contour_pointer
     Call GetPixelHSV(path_HSV, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
 
-    test_pos["x"] = contour_rings_x(contour_rings_pnt) - 1
-    test_pos["y"] = contour_rings_y(contour_rings_pnt)
+    test_pos ["x"] = contour_rings_x(contour_rings_pnt) - 1
+    test_pos ["y"] = contour_rings_y(contour_rings_pnt)
 
-    while cnt_round <= 8
+    While cnt_round <= 8
 
         ' say "contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt): " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
         ' say "test_pos: " & test_pos["x"] & "," & test_pos["y"]
         last_test_pos["x"] = test_pos["x"] :  last_test_pos["y"] = test_pos["y"]
-        call next_pos_clock_wise(test_pos, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
+        Call next_pos_clock_wise(test_pos, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
 
         Call GetPixelHSV(HSV, test_pos["x"], test_pos["y"])
-        if not is_HSV_DIFF(HSV, path_HSV) then
+        If Not is_HSV_DIFF(HSV, path_HSV) Then
             ' 找到一个新的轮廓点, 检测新的轮廓点是否已在轮廓环中出现
-            say "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
-            is_new_contour_pointer = true
-            for j = 0 to contour_rings_pnt - 1
+            ' say "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
+            ShowMessage "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
+
+            is_new_contour_pointer = True
+            For j = 0 To contour_rings_pnt - 1
                 if contour_rings_x(j) = test_pos["x"] and contour_rings_y(j) = test_pos["y"] then
-                    is_new_contour_pointer = false
-                    exit for
-                end if
-            next
-            if not is_new_contour_pointer then
+                    is_new_contour_pointer = False
+                    Exit For
+                End If
+            Next
+            If Not is_new_contour_pointer Then
                 ' 轮廓环闭环
                 say "轮廓环闭环: " & test_pos["x"] & "," & test_pos["y"]
 
                 ' 显示轮廓环路径
                 TouchDown contour_rings_x(0), contour_rings_y(0), 1  ' 按住屏幕上的坐标不放，并设置此触点ID=1
-                for j = 0 to contour_rings_pnt
-                    TouchMove contour_rings_x(j), contour_rings_y(j), 1, 1' 将ID=1的触点花1毫秒移动至 contour_rings_x(j), contour_rings_y(j)坐标
-                next
-                TouchUp 1' 松开弹起ID=1的触点
+                For j = 0 To contour_rings_pnt step 10
+                    TouchMove contour_rings_x(j), contour_rings_y(j), 1, 0 ' 将ID=1的触点花0毫秒移动至 contour_rings_x(j), contour_rings_y(j)坐标
+                Next
+                TouchUp 1 ' 松开弹起ID=1的触点
 
                 EndScript
-            end if
+            End If
 
             ' 轮廓环闭环未闭环
             ' 以新轮廓点的色作为新的比对色
-            call copyHSV(HSV, path_HSV)
+            Call copyHSV(HSV, path_HSV)
 
             ' 保存新的轮廓点到轮廓环上
             contour_rings_pnt = contour_rings_pnt + 1
@@ -248,89 +250,89 @@ function search_a_contour_ring()
             test_pos["x"] = last_test_pos["x"] :  test_pos["y"] = last_test_pos["y"]
             ' 复位顺时针搜索计数
             cnt_round = 0
-        else
+        Else
             ' 继续搜索, 顺时针搜索计数 + 1
             cnt_round = cnt_round + 1
-        end if
-    wend
-    if cnt_round > 8 then
+        End If
+    Wend
+    If cnt_round > 8 Then
         say "轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环: " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
         EndScript
-    end if
-end function
+    End If
+End Function
 
 ' 顺时针方向 以 center 为中心, pos 为起点的下一个点
-function next_pos_clock_wise(pos, center_x, center_y)
-    dim dx = pos["x"] - center_x, dy = pos["y"] - center_y
+Function next_pos_clock_wise(pos, center_x, center_y)
+    Dim dx = pos["x"] - center_x, dy = pos["y"] - center_y
     Select Case dy
         Case -1
             Select Case dx
                 Case -1         ' 上左 -> 上
-                    pos["x"] = center_x
-                    pos["y"] = center_y - 1
+                    pos ["x"] = center_x
+                    pos ["y"] = center_y - 1
                 Case 0         ' 上 -> 上右
-                    pos["x"] = center_x + 1
-                    pos["y"] = center_y - 1
+                    pos ["x"] = center_x + 1
+                    pos ["y"] = center_y - 1
                 Case 1         ' 上右 -> 右
-                    pos["x"] = center_x + 1
-                    pos["y"] = center_y
+                    pos ["x"] = center_x + 1
+                    pos ["y"] = center_y
                 Case Else
                     say "error @ next_pos_clock_wise 20180122_215614: dx, dy: " & dx & "," & dy
-                    pos["x"] = -99
-                    pos["y"] = -99
+                    pos ["x"] = -99
+                    pos ["y"] = -99
                     EndScript
             End Select
         Case 0
             Select Case dx
                 Case -1         ' 左 -> 上左
-                    pos["x"] = center_x - 1
-                    pos["y"] = center_y - 1
+                    pos ["x"] = center_x - 1
+                    pos ["y"] = center_y - 1
                 Case 1         ' 右 -> 下右
-                    pos["x"] = center_x + 1
-                    pos["y"] = center_y + 1
+                    pos ["x"] = center_x + 1
+                    pos ["y"] = center_y + 1
                 Case Else
                     say "error @ next_pos_clock_wise 20180122_215621: dx, dy: " & dx & "," & dy
                     say "error @ next_pos_clock_wise 20180122_215621: center_x, center_x: " & center_x & "," & center_y
                     say "error @ next_pos_clock_wise 20180122_215621: pos: " & pos["x"] & "," & pos["y"]
-                    pos["x"] = -99
-                    pos["y"] = -99
+                    pos ["x"] = -99
+                    pos ["y"] = -99
                     EndScript
             End Select
         Case 1
             Select Case dx
                 Case -1         ' 下左 -> 左
-                    pos["x"] = center_x - 1
-                    pos["y"] = center_y
+                    pos ["x"] = center_x - 1
+                    pos ["y"] = center_y
                 Case 0         ' 下 -> 下左
-                    pos["x"] = center_x - 1
-                    pos["y"] = center_y + 1
+                    pos ["x"] = center_x - 1
+                    pos ["y"] = center_y + 1
                 Case 1         ' 下右 -> 下
-                    pos["x"] = center_x
-                    pos["y"] = center_y + 1
+                    pos ["x"] = center_x
+                    pos ["y"] = center_y + 1
                 Case Else
                     say "error @ next_pos_clock_wise 20180122_215441: dx, dy: " & dx & "," & dy
-                    pos["x"] = -99
-                    pos["y"] = -99
+                    pos ["x"] = -99
+                    pos ["y"] = -99
                     EndScript
             End Select
         Case Else
             say "error @ next_pos_clock_wise 20180122_215149: dx, dy: " & dx & "," & dy
-            pos["x"] = -99
-            pos["y"] = -99
+            pos ["x"] = -99
+            pos ["y"] = -99
             EndScript
     End Select
-end function
+End Function
 
 Function contour()
     KeepCapture()
-    dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}
+    Dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}
     For y = SCAN_LINE_MIN_Y To SCAN_LINE_MAX_Y Step SCAN_LINE_GAP
         x = 0
         Call GetPixelHSV(last_HSV, x, y)
 
         For x = 1 To screenX - 1
             Call GetPixelHSV(HSV, x, y)
-            if is_HSV_DIFF(HSV, last_HSV) then
+            If is_HSV_DIFF(HSV, last_HSV) Then
                 say "找到轮廓点 坐标在" & x & "," & y
                 contour_rings_x(contour_rings_pnt) = x
                 contour_rings_y(contour_rings_pnt) = y
@@ -338,17 +340,17 @@ Function contour()
                 ' Touch x, y, 1
 
 
-                call search_a_contour_ring()
+                Call search_a_contour_ring()
 
                 ReleaseCapture()
-                exit Function
+                Exit Function
 
 
 
 
-            else
+            Else
                 copyHSV(HSV, last_HSV)
-            end if
+            End If
 
         Next
 
@@ -457,7 +459,7 @@ End Function
 
 Function is_HSV_DIFF(HSV1, HSV2)
     ' HSV 色差半径阀值
-    dim H_rad = 0.09, V_rad = 5, S_rad = 0.7
+    Dim H_rad = 0.09, V_rad = 5, S_rad = 0.7
     IF ABS(HSV1["H"] - HSV2["H"]) > H_rad OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > V_rad THEN
         is_HSV_DIFF = True
     Else
@@ -594,11 +596,11 @@ Function locate_Jumper_header_by_cross_chord(Jumper_header)
         TracePrint "DBP 20180120_002351 全部没找到"
     End If
 
-    dim x_dir = {"left":-1,"right":1,"up":0,"down":0}
-    dim y_dir = {"left":0,"right":0,"up":-1,"down":1}
+    Dim x_dir = {"left":-1,"right":1,"up":0,"down":0}
+    Dim y_dir = {"left":0,"right":0,"up":-1,"down":1}
     Dim dir = Array("left","right","up","down")
-    dim pos_x = {"left":-1,"right":-1,"up":-1,"down":-1}
-    dim pos_y = {"left":-1,"right":-1,"up":-1,"down":-1}
+    Dim pos_x = {"left":-1,"right":-1,"up":-1,"down":-1}
+    Dim pos_y = {"left":-1,"right":-1,"up":-1,"down":-1}
 
     For j = 0 To UBound(Dir)
         x = start_x
@@ -914,6 +916,7 @@ Sub say(something)
     ShowMessage something
     TracePrint something
 End Sub
+
 
 
 
