@@ -33,7 +33,7 @@ screenY = GetScreenY()
 dim contour_ring_min = {"x": screenX * 2, "y": screenY * 2}
 dim contour_ring_max = {"x": -screenX * 2, "y": -screenY * 2}
 
-Dim bgcolor, iter
+Dim bgcolor, iter = 0
 Dim top, bottom, centx, centy, dist
 Randomize (Time())
 
@@ -225,7 +225,7 @@ Dim ret_val
 ' Call contour()
 
 
-
+Log.Open
 DO_PRESS = True
 timerate = 1.32
 while(True)
@@ -241,6 +241,13 @@ while(True)
         say "Locate_Target(Target) 失败"
         EndScript
     end if
+
+    iter = (iter + 1) Mod 10
+
+    say "iter=" & iter & ", Jumper_foot: " & Jumper_foot["x"] & "," & Jumper_foot["y"] & "; Target: " & Target["x"] & "," & Target["y"]
+
+    SnapShot ("/sdcard/Pictures/autojump_" & iter & ".png")
+
 
     ' 计算并跳跃
 
