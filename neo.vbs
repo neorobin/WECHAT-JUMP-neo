@@ -224,6 +224,46 @@ Dim SCAN_LINE_GAP = 50, SCAN_LINE_MIN_Y = 300, SCAN_LINE_MAX_Y = 1700
 Dim ret_val
 ' Call contour()
 
+
+
+DO_PRESS = True
+timerate = 1.32
+while(True)
+
+    ' 搜索 Jumper 的位置
+    call locate_Jumper_foot_by_cross_chord(Jumper_foot)
+
+    ' 搜索目标物体的位置
+    if Locate_Target(Target) then
+        say "Locate_Target(Target) 成功"
+        say "Target: " & Target["x"] & "," & Target["y"]
+    else
+        say "Locate_Target(Target) 失败"
+        EndScript
+    end if
+
+    ' 计算并跳跃
+
+    dist = distance_pos(Jumper_foot, Target)
+    hold = Int(dist * (timerate))
+    say "Distance: " & Int(dist) & ", hold: " & hold
+
+    If DO_PRESS Then
+        Touch Target["x"], Target["y"], hold
+    End If
+
+    ' 等待画面稳定
+    Delay 1000 + Int(Rnd() * 1500)
+wend
+
+
+
+
+EndScript
+
+
+
+
 call locate_Jumper_foot_by_cross_chord(Jumper_foot)
 
 ret_val = Locate_1st_contour_ring()
@@ -242,22 +282,7 @@ else
     say "Locate_Target(Target) 失败"
 end if
 
-while(False)
 
-    ' 搜索 Jumper 的位置
-
-    ' 搜索目标物体的位置
-
-    ' 计算并跳跃
-
-    ' 等待画面稳定
-    ' Delay 1000 + Int(Rnd() * 1500)
-wend
-
-
-
-
-EndScript
 
 
 function Locate_Target(Target)
@@ -1077,6 +1102,11 @@ End Function
 Function distance(x1, y1, x2, y2)
     distance = Sqr((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 End Function
+
+Function distance_pos(pos_1, pos_2)
+    distance_pos = Sqr(( pos_1["x"] - pos_2["x"]) ^ 2 + (pos_1["y"] - pos_2["y"]) ^ 2)
+End Function
+
 
 Function OnScriptExit()
     Delay 2000
