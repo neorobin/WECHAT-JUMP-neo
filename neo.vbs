@@ -5,15 +5,15 @@
 
 Dim PI = 3.1415926, two_PI = 2 * PI
 
-Dim DO_PRESS = true ' 调试用, 是否 TOUCH 屏幕的开头
+Dim DO_PRESS = false ' 调试用, 是否 TOUCH 屏幕的开头
 
 
 
-' 视图中心	562.5	979
+' 视图中心  562.5   979
 DIM VIEW_CENT_X = 562.5
 DIM VIEW_CENT_Y = 979
 
-dim target_x, target_y
+Dim target_x, target_y
 
 Delay 1000
 Dim x1, y1, x2, y2
@@ -60,7 +60,7 @@ say "screenX: " & screenX & ", screenY: " & screenY
 
 
 ' Jumper header 半径, Jumper_Height 从头中心到脚的距离
-Dim  Jumper_header_rad = 30, Jumper_Height = 159			' Jumper_Height = 1110-951 = 159
+Dim  Jumper_header_rad = 30, Jumper_Height = 159            ' Jumper_Height = 1110-951 = 159
 
 ' Jumper header center color H 分量范围: 0.58--0.75 以 0.66 为中心, 半径为 0.09
 
@@ -72,29 +72,29 @@ Dim  Jumper_header_rad = 30, Jumper_Height = 159			' Jumper_Height = 1110-951 = 
 Dim HSV = {"H":0,"S":0,"V":0}, v_RGB = &H7A4B52
 ' 亮点色 B48D96   暗点色 383534   754457   664C3D
 
-v_RGB = &H7A4B52
-Call RGB2HSV(HSV, v_RGB)
-say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
+' v_RGB = &H7A4B52
+' Call RGB2HSV(HSV, v_RGB)
+' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
-v_RGB = &HB48D96
-Call RGB2HSV(HSV, v_RGB)
-say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
+' v_RGB = &HB48D96
+' Call RGB2HSV(HSV, v_RGB)
+' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
-v_RGB = &H383534
-Call RGB2HSV(HSV, v_RGB)
-say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
+' v_RGB = &H383534
+' Call RGB2HSV(HSV, v_RGB)
+' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
-v_RGB = &H754457
-Call RGB2HSV(HSV, v_RGB)
-say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
+' v_RGB = &H754457
+' Call RGB2HSV(HSV, v_RGB)
+' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
-v_RGB = &H664C3D
-Call RGB2HSV(HSV, v_RGB)
-say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
+' v_RGB = &H664C3D
+' Call RGB2HSV(HSV, v_RGB)
+' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
-v_RGB = &H61EEFF  ' 黄色
-Call RGB2HSV(HSV, v_RGB)
-say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
+' v_RGB = &H61EEFF  ' 黄色
+' Call RGB2HSV(HSV, v_RGB)
+' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
 
 Dim jumper_head_outline_x(1000), jumper_head_outline_y(1000)
@@ -111,56 +111,262 @@ Dim Jumper = {"x":-1, "y":-1}
 ' CALL locate_Jumper(Jumper)
 ' SAY "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
 
-dim hold, foot_x, foot_y
+Dim hold, foot_x, foot_y
 
-While (true)
-	' CALL locate_Jumper(Jumper)
-	' SAY "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
+While (False)
+    ' CALL locate_Jumper(Jumper)
+    ' SAY "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
     ' Touch Jumper["x"], Jumper["y"], 1
 
 
-    call locate_Jumper_header_by_cross_chord(Jumper_header)
-	SAY "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
+    Call locate_Jumper_header_by_cross_chord(Jumper_header)
+    SAY "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
 
 
     foot_x = Jumper_header["x"]
     foot_y = (Jumper_header["y"] + Jumper_Height)
-	SAY "Jumper foot 坐标在" & foot_x & "," & foot_y
+    say "Jumper foot 坐标在" & foot_x & "," & foot_y
 
 
     target_x = (VIEW_CENT_X * 2 - Jumper_header["x"])
     target_y = (VIEW_CENT_Y * 2 -  (Jumper_header["y"] + Jumper_Height) )
-	SAY "目标 坐标在" & target_x & "," & target_y
+    say "目标 坐标在" & target_x & "," & target_y
 
 
 
     dist = distance(foot_x, foot_y, target_x, target_y)
-    hold = Int(dist * (timerate ))
+    hold = Int(dist * (timerate))
     say "Distance: " & Int(dist) & ", Delay: " & hold
 
-    if DO_PRESS then
+    If DO_PRESS Then
         Touch target_x, target_y, hold
-    end if
+    End If
 
     ' Touch jumper_head_outline_x(1), jumper_head_outline_y(1), 1
     exit While
 Wend
+
+
+Dim x, y, rColor
+
+
+' 0..GetScreenX() - 1, 0..GetScreenY() - 1 是屏幕有效范围, 超出范围取色都返回 &H000000
+' x = screenX - 1
+' y = screenY - 1
+
+
+
+' 轮廓算法
+' 1. 从内部点搜索到边缘
+' 从内部一点一直向右直至搜索到一个外部点, 上一个内部点就是一个轮廓点
+' 以此轮郭点为中心, 那个外部点为起始, 顺时针搜索邻点直至搜索到第一个内部点
+' 这个内部点作为第2个轮廓点, 以搜索的上一个外部点为起始, 以第2个轮廓点为中心
+' 搜索第3个轮廓点
+' ...
+' 直到再次搜索到第1个轮廓点, 轮廓闭合, 结束
+
+
+' 找出若干轮廓环, 在每个轮廓环内部做排序, 把环内 y 坐标最小行上 x 坐标最小的点作为环首
+' 在两次轮廓截图中匹配轮廓环对比, 将能得到最大匹配度的位移作为结果偏移
+
+
+' 轮廓环扫描
+' 在纵坐标 300--1700 之间 以 50 的间隔水平扫描线自左到右(x 增加)扫描屏幕 (0 -- GetScreenX() - 1)
+' 当扫到一个色阶跃时, 在右边的点作为轮廓点
+
+
+
+Dim contour_rings_x(10000), contour_rings_y(10000)
+Dim contour_rings_pnt = 0   ' 轮廓环操作指针
+
+dim SCAN_LINE_GAP = 50, SCAN_LINE_MIN_Y = 300, SCAN_LINE_MAX_Y = 1700
+
+
+call contour()
+
+
 EndScript
 
-Dim  x, y, rColor
+' 以此轮郭点为中心, 那个外部点为起始, 顺时针搜索邻点直至搜索到第一个内部点
+' 这个内部点作为第2个轮廓点, 以搜索的上一个外部点为起始, 以第2个轮廓点为中心
+' 搜索第3个轮廓点
+' ...
+' 直到再次搜索到第1个轮廓点, 轮廓闭合, 结束
+' 第一个轮廓点由 contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt) 指出
+' contour_rings_x(contour_rings_pnt) - 1, contour_rings_y(contour_rings_pnt) 为第一个外部点
+function search_a_contour_ring()
+    dim cnt_round = 0   ' 轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环
+    dim pos = {"x":-1, "y":-1}, center = {"x":-1, "y":-1}, test_pos = {"x":-1, "y":-1}, last_test_pos = {"x":-1, "y":-1}
+    dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}, path_HSV = {"H":0,"S":0,"V":0}
+    dim is_new_contour_pointer
+    Call GetPixelHSV(path_HSV, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
 
-x = 336
-y = 952
+    test_pos["x"] = contour_rings_x(contour_rings_pnt) - 1
+    test_pos["y"] = contour_rings_y(contour_rings_pnt)
 
-rColor = GetPixelColor(x, y, 0)
+    while cnt_round <= 8
 
-TracePrint "这个点的颜色为：" & rColor
-rColor = GetPixelColor(x, y, 1)
-TracePrint "这个点的颜色为：" & rColor
+        ' say "contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt): " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
+        ' say "test_pos: " & test_pos["x"] & "," & test_pos["y"]
+        last_test_pos["x"] = test_pos["x"] :  last_test_pos["y"] = test_pos["y"]
+        call next_pos_clock_wise(test_pos, contour_rings_x(contour_rings_pnt), contour_rings_y(contour_rings_pnt))
+
+        Call GetPixelHSV(HSV, test_pos["x"], test_pos["y"])
+        if not is_HSV_DIFF(HSV, path_HSV) then
+            ' 找到一个新的轮廓点, 检测新的轮廓点是否已在轮廓环中出现
+            say "找到轮廓点: " & test_pos["x"] & "," & test_pos["y"]
+            is_new_contour_pointer = true
+            for j = 0 to contour_rings_pnt - 1
+                if contour_rings_x(j) = test_pos["x"] and contour_rings_y(j) = test_pos["y"] then
+                    is_new_contour_pointer = false
+                    exit for
+                end if
+            next
+            if not is_new_contour_pointer then
+                ' 轮廓环闭环
+                say "轮廓环闭环: " & test_pos["x"] & "," & test_pos["y"]
+
+                ' 显示轮廓环路径
+                TouchDown contour_rings_x(0), contour_rings_y(0), 1  ' 按住屏幕上的坐标不放，并设置此触点ID=1
+                for j = 0 to contour_rings_pnt
+                    TouchMove contour_rings_x(j), contour_rings_y(j), 1, 1' 将ID=1的触点花1毫秒移动至 contour_rings_x(j), contour_rings_y(j)坐标
+                next
+                TouchUp 1' 松开弹起ID=1的触点
+
+                EndScript
+            end if
+
+            ' 轮廓环闭环未闭环
+            ' 以新轮廓点的色作为新的比对色
+            call copyHSV(HSV, path_HSV)
+
+            ' 保存新的轮廓点到轮廓环上
+            contour_rings_pnt = contour_rings_pnt + 1
+            contour_rings_x(contour_rings_pnt) = test_pos["x"]
+            contour_rings_y(contour_rings_pnt) = test_pos["y"]
+
+            test_pos["x"] = last_test_pos["x"] :  test_pos["y"] = last_test_pos["y"]
+            ' 复位顺时针搜索计数
+            cnt_round = 0
+        else
+            ' 继续搜索, 顺时针搜索计数 + 1
+            cnt_round = cnt_round + 1
+        end if
+    wend
+    if cnt_round > 8 then
+        say "轮郭点为中心 顺时针搜索计数, 如果搜索 8 个点后仍无每二个轮廓点出现, 则是一个单轮廓点环: " & contour_rings_x(contour_rings_pnt) & "," & contour_rings_y(contour_rings_pnt)
+        EndScript
+    end if
+end function
+
+' 顺时针方向 以 center 为中心, pos 为起点的下一个点
+function next_pos_clock_wise(pos, center_x, center_y)
+    dim dx = pos["x"] - center_x, dy = pos["y"] - center_y
+    Select Case dy
+        Case -1
+            Select Case dx
+                Case -1         ' 上左 -> 上
+                    pos["x"] = center_x
+                    pos["y"] = center_y - 1
+                Case 0         ' 上 -> 上右
+                    pos["x"] = center_x + 1
+                    pos["y"] = center_y - 1
+                Case 1         ' 上右 -> 右
+                    pos["x"] = center_x + 1
+                    pos["y"] = center_y
+                Case Else
+                    say "error @ next_pos_clock_wise 20180122_215614: dx, dy: " & dx & "," & dy
+                    pos["x"] = -99
+                    pos["y"] = -99
+                    EndScript
+            End Select
+        Case 0
+            Select Case dx
+                Case -1         ' 左 -> 上左
+                    pos["x"] = center_x - 1
+                    pos["y"] = center_y - 1
+                Case 1         ' 右 -> 下右
+                    pos["x"] = center_x + 1
+                    pos["y"] = center_y + 1
+                Case Else
+                    say "error @ next_pos_clock_wise 20180122_215621: dx, dy: " & dx & "," & dy
+                    say "error @ next_pos_clock_wise 20180122_215621: center_x, center_x: " & center_x & "," & center_y
+                    say "error @ next_pos_clock_wise 20180122_215621: pos: " & pos["x"] & "," & pos["y"]
+                    pos["x"] = -99
+                    pos["y"] = -99
+                    EndScript
+            End Select
+        Case 1
+            Select Case dx
+                Case -1         ' 下左 -> 左
+                    pos["x"] = center_x - 1
+                    pos["y"] = center_y
+                Case 0         ' 下 -> 下左
+                    pos["x"] = center_x - 1
+                    pos["y"] = center_y + 1
+                Case 1         ' 下右 -> 下
+                    pos["x"] = center_x
+                    pos["y"] = center_y + 1
+                Case Else
+                    say "error @ next_pos_clock_wise 20180122_215441: dx, dy: " & dx & "," & dy
+                    pos["x"] = -99
+                    pos["y"] = -99
+                    EndScript
+            End Select
+        Case Else
+            say "error @ next_pos_clock_wise 20180122_215149: dx, dy: " & dx & "," & dy
+            pos["x"] = -99
+            pos["y"] = -99
+            EndScript
+    End Select
+end function
+
+Function contour()
+    KeepCapture()
+    dim HSV = {"H":0,"S":0,"V":0}, last_HSV = {"H":0,"S":0,"V":0}
+    For y = SCAN_LINE_MIN_Y To SCAN_LINE_MAX_Y Step SCAN_LINE_GAP
+        x = 0
+        Call GetPixelHSV(last_HSV, x, y)
+
+        For x = 1 To screenX - 1
+            Call GetPixelHSV(HSV, x, y)
+            if is_HSV_DIFF(HSV, last_HSV) then
+                say "找到轮廓点 坐标在" & x & "," & y
+                contour_rings_x(contour_rings_pnt) = x
+                contour_rings_y(contour_rings_pnt) = y
+
+                ' Touch x, y, 1
+
+
+                call search_a_contour_ring()
+
+                ReleaseCapture()
+                exit Function
+
+
+
+
+            else
+                copyHSV(HSV, last_HSV)
+            end if
+
+        Next
+
+    Next
+
+    ReleaseCapture()
+End Function
+
+
+
+
+
+
+
 
 While (False)
-//点击屏幕坐标(100,100)的点，并持续按住100毫秒（0.1秒）
-Touch x, y, 1
+    ' 点击屏幕坐标(100,100)的点，并持续按住100毫秒（0.1秒）
+    ' Touch x, y, 1
 
 Wend
 
@@ -232,8 +438,40 @@ While (True)
 Wend
 
 
+
+
+' 把 HSV_src 的值复制给 HSV_dest
+' 表变量直接赋值是得到同样的引用, 即两个表引用一同一个数据空间
+Function copyHSV(HSV_src, HSV_dest)
+    HSV_dest["H"] = HSV_src["H"]
+    HSV_dest["S"] = HSV_src["S"]
+    HSV_dest["V"] = HSV_src["V"]
+End Function
+
+
+' 获取一点的 HSV 颜色值, 外部引用参数初始化: HSV = {"H":0,"S":0,"V":0}
+' GetPixelColor(x, y, 1) 获取一点的 十进制颜色值
+Function GetPixelHSV(HSV, x, y)
+    Call RGB2HSV(HSV, GetPixelColor(x, y, 1))
+End Function
+
+Function is_HSV_DIFF(HSV1, HSV2)
+    ' HSV 色差半径阀值
+    dim H_rad = 0.09, V_rad = 5, S_rad = 0.7
+    IF ABS(HSV1["H"] - HSV2["H"]) > H_rad OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > V_rad THEN
+        is_HSV_DIFF = True
+    Else
+        is_HSV_DIFF = False
+    End If
+End Function
+
+
+
+
+
+
 Function locate_Jumper(Jumper)
-    call locate_Jumper_header(Jumper)
+    Call locate_Jumper_header(Jumper)
     Jumper["y"] = Jumper["y"] + Jumper_Height
 End Function
 
@@ -332,18 +570,8 @@ End Function
 
 
 
-' 轮廓算法
-' 1. 从内部点搜索到边缘
-' 从内部一点一直向右直至搜索到一个外部点, 上一个内部点就是一个轮廓点
-' 以此轮郭点为中心, 那个外部点为起始, 顺时针搜索邻点直至搜索到第一个内部点
-' 这个内部点作为第2个轮廓点, 以搜索的上一个外部点为起始, 以第2个轮廓点为中心
-' 搜索第3个轮廓点
-' ...
-' 直到再次搜索到第1个轮廓点, 轮廓闭合, 结束
 
 
-' 找出若干轮廓环, 在每个轮廓环内部做排序, 把环内 y 坐标最小行上 x 坐标最小的点作为环首
-' 在两次轮廓截图中匹配轮廓环对比, 将能得到最大匹配度的位移作为结果偏移
 
 
 ' 正交十字弦定位法找出 i 头中心
@@ -372,28 +600,28 @@ Function locate_Jumper_header_by_cross_chord(Jumper_header)
     dim pos_x = {"left":-1,"right":-1,"up":-1,"down":-1}
     dim pos_y = {"left":-1,"right":-1,"up":-1,"down":-1}
 
-    for j = 0 to UBound(dir)
+    For j = 0 To UBound(Dir)
         x = start_x
         y = start_y
-        do
+        Do
             x = x + x_dir[dir(j)]
             y = y + y_dir[dir(j)]
             rColor = GetPixelColor(x, y, 1)
             Call RGB2HSV(HSV, rColor)
             if Abs(HSV["H"] - Jumper_header_center_color_H_cent) > Jumper_header_center_color_H_rad then
-                pos_x[dir(j)] = x
-                pos_y[dir(j)] = y
+                pos_x [dir(j)] = x
+                pos_y [dir(j)] = y
 
-                SAY "search 坐标在" & x & "," & y
-                exit do
+                say "search 坐标在" & x & "," & y
+                Exit Do
             End If
-        loop while true
-    next
+        Loop While True
+    Next
     ReleaseCapture()
 
     Jumper_header["x"] = (pos_x["left"] + pos_x["right"]) / 2
     Jumper_header["y"] = (pos_y["up"] + pos_y["down"]) / 2
-end function
+End Function
 
 
 
@@ -667,10 +895,10 @@ Function press(delta)
     hold = Int(delta * (timerate + r))
     say "Distance: " & Int(delta) & ", Delay: " & hold & " rand: " & Left(r, 5)
 
-    if DO_PRESS then
+    If DO_PRESS Then
         Touch centx, centy, hold
         Touch 10, 10, 10
-    end if
+    End If
     press = hold
 End Function
 
@@ -686,5 +914,6 @@ Sub say(something)
     ShowMessage something
     TracePrint something
 End Sub
+
 
 
