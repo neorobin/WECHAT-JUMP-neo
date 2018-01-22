@@ -8,18 +8,16 @@
 
 Dim PI = 3.1415926, two_PI = 2 * PI
 
-Dim DEBUG_SW = FALSE
+Dim DEBUG_SW = TRUE
 
 Dim DO_PRESS = False ' 调试用, 是否 TOUCH 屏幕的开头
-
-
 
 
 ' 视图中心  562.5   979
 Dim VIEW_CENT_X = 562.5
 Dim VIEW_CENT_Y = 979
 
-Dim target_x, target_y, Target = {"x":0, "y":0}
+Dim Target = {"x":0, "y":0}
 
 Delay 1000
 Dim x1, y1, x2, y2
@@ -69,7 +67,6 @@ BALL_SCH_LOOP_IND_CENTER = Round((1 + BALL_SCH_WIDTH) / 2)     ' 定位搜索 LO
 say "screenX: " & screenX & ", screenY: " & screenY
 
 
-
 ' Jumper header 半径, Jumper_Height 从头中心到脚的距离
 Dim  Jumper_header_rad = 30, Jumper_Height = 159            ' Jumper_Height = 1110-951 = 159
 
@@ -80,119 +77,26 @@ Dim  Jumper_header_rad = 30, Jumper_Height = 159            ' Jumper_Height = 11
 ' For example, the color purple is defined 0x800080 because it has an intensity of 80 for its blue
 ' and red components but an intensity of 00 for its green component.
 
-Dim HSV = {"H":0,"S":0,"V":0}, v_RGB = &H7A4B52
+Dim HSV = {"H":0,"S":0,"V":0}, v_RGB = &H7A4B52, HSV2 = {"H":0,"S":0,"V":0}
 ' 亮点色 B48D96   暗点色 383534   754457   664C3D
-
-' v_RGB = &H7A4B52
-' Call RGB2HSV(HSV, v_RGB)
-' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
-
-' v_RGB = &HB48D96
-' Call RGB2HSV(HSV, v_RGB)
-' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
-
-' v_RGB = &H383534
-' Call RGB2HSV(HSV, v_RGB)
-' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
-
-' v_RGB = &H754457
-' Call RGB2HSV(HSV, v_RGB)
-' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
-
-' v_RGB = &H664C3D
-' Call RGB2HSV(HSV, v_RGB)
-' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
-
-' v_RGB = &H61EEFF  ' 黄色
-' Call RGB2HSV(HSV, v_RGB)
-' say UCase(HEX(v_RGB)) & ", H: " &  HSV["H"] & ", S: " &  HSV["S"] & ", V: " &  HSV["V"]
 
 
 Dim jumper_head_outline_x(1000), jumper_head_outline_y(1000)
 
-
-
-
 Dim Jumper_header = {"x":-1, "y":-1}, Jumper_foot = {"x":-1, "y":-1}
-' CALL locate_Jumper_header(Jumper_header)
-' say "locate_Jumper_header Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
-' say "Jumper foot 坐标在" & Jumper_header["x"] & "," & (Jumper_header["y"] + Jumper_Height)
 
 Dim Jumper = {"x":-1, "y":-1}
-' CALL locate_Jumper(Jumper)
-' say "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
 
-Dim hold, foot_x, foot_y
+Dim hold
 
 if DEBUG_SW then
     Log.Open
 end if
 
-    ' Call locate_Jumper_header_by_cross_chord(Jumper_header)
-    ' say "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
-
-
-    ' foot_x = Jumper_header["x"]
-    ' foot_y = (Jumper_header["y"] + Jumper_Height)
-    ' say "Jumper foot 坐标在" & foot_x & "," & foot_y
-
-
-' Dim 返回值
-' 返回值=GetTempDir()
-' TracePrint "当前设备的临时目录为：" & 返回值
-
-
-' Log.Open
-' TracePrint "日志被开启，这句话会被记录到日志文件中"
-' Log.Close
-' TracePrint "日志被关闭，这句话不会被记录到日志文件中"
-
-
-' EndScript
-
-
-
-While (False)
-    ' CALL locate_Jumper(Jumper)
-    ' say "locate_Jumper Jumper foot 坐标在" & Jumper["x"] & "," & Jumper["y"]
-    ' Touch Jumper["x"], Jumper["y"], 1
-
-
-    Call locate_Jumper_header_by_cross_chord(Jumper_header)
-    say "Jumper_header 坐标在" & Jumper_header["x"] & "," & Jumper_header["y"]
-
-
-    foot_x = Jumper_header["x"]
-    foot_y = (Jumper_header["y"] + Jumper_Height)
-    say "Jumper foot 坐标在" & foot_x & "," & foot_y
-
-
-    target_x = (VIEW_CENT_X * 2 - Jumper_header["x"])
-    target_y = (VIEW_CENT_Y * 2 -  (Jumper_header["y"] + Jumper_Height) )
-    say "目标 坐标在" & target_x & "," & target_y
-
-
-
-    dist = distance(foot_x, foot_y, target_x, target_y)
-    hold = Int(dist * (timerate))
-    say "Distance: " & Int(dist) & ", Delay: " & hold
-
-    If DO_PRESS Then
-        Touch target_x, target_y, hold
-    End If
-
-    ' Touch jumper_head_outline_x(1), jumper_head_outline_y(1), 1
-    exit While
-Wend
-
-
 Dim x, y, rColor
 
 
 ' 0..GetScreenX() - 1, 0..GetScreenY() - 1 是屏幕有效范围, 超出范围取色都返回 &H000000
-' x = screenX - 1
-' y = screenY - 1
-
 
 
 ' 轮廓算法
@@ -214,20 +118,26 @@ Dim x, y, rColor
 ' 当扫到一个色阶跃时, 在右边的点作为轮廓点
 
 
-
 Dim contour_rings_x(10000), contour_rings_y(10000)
 Dim contour_rings_pnt = 0   ' 轮廓环操作指针
 
 Dim SCAN_LINE_GAP = 50, SCAN_LINE_MIN_Y = 300, SCAN_LINE_MAX_Y = 1700
 
-
 Dim ret_val
-' Call contour()
 
 
 Log.Open
 DO_PRESS = True
-timerate = 1.32
+timerate = 1.35
+ 
+ 
+
+
+
+' call compare_HSV( &H757574, &H717171)
+' EndScript
+
+
 while(True)
 
     ' 搜索 Jumper 的位置
@@ -245,6 +155,8 @@ while(True)
     iter = (iter + 1) Mod 10
 
     say "iter=" & iter & ", Jumper_foot: " & Jumper_foot["x"] & "," & Jumper_foot["y"] & "; Target: " & Target["x"] & "," & Target["y"]
+    say "iter=" & iter & ", contour_ring_min: " & contour_ring_min["x"] & "," & contour_ring_min["y"] & "; contour_ring_max: " & contour_ring_max["x"] & "," & contour_ring_max["y"]
+    TracePrint "iter=" & iter & ", get_all_contour_ring_pos: " & get_all_contour_ring_pos(1)
 
     SnapShot ("/sdcard/Pictures/autojump_" & iter & ".png")
 
@@ -260,36 +172,31 @@ while(True)
     End If
 
     ' 等待画面稳定
-    Delay 1000 + Int(Rnd() * 1500)
+    Delay 3000 + Int(Rnd() * 1500)
 wend
 
 
-
+' 当前设备的临时目录为：
+' /storage/emulated/legacy/MobileAnjian/log/
+' /sdcard/Pictures/
 
 EndScript
 
 
+function compare_HSV(rgb1, rgb2)
+
+    call RGB2HSV(HSV, rgb1)
+
+    debug_msg "HSV, H:" & HSV["H"] & ", S:" & HSV["S"] & ", V:" & HSV["V"]
 
 
-call locate_Jumper_foot_by_cross_chord(Jumper_foot)
-
-ret_val = Locate_1st_contour_ring()
-
-if NOT ret_val then
-    say "Locate_1st_contour_ring() 失败"
-else
-    say "Locate_1st_contour_ring() 成功"
-    ' call draw_contour_ring(10)                ' 显示轮廓环路径
-end if
-
-if Locate_Target(Target) then
-    say "Locate_Target(Target) 成功"
-    say "Target: " & Target["x"] & "," & Target["y"]
-else
-    say "Locate_Target(Target) 失败"
-end if
+    call RGB2HSV(HSV2, rgb2)
+    debug_msg "HSV2, H:" & HSV2["H"] & ", S:" & HSV2["S"] & ", V:" & HSV2["V"]
 
 
+    debug_msg "is_HSV_DIFF(HSV, HSV2)=" & CStr(is_HSV_DIFF(HSV, HSV2))
+
+end function
 
 
 function Locate_Target(Target)
@@ -309,13 +216,11 @@ function Locate_Target(Target)
 end function
 
 
-
 function locate_Jumper_foot_by_cross_chord(Jumper_foot)
     Call locate_Jumper_header_by_cross_chord(Jumper_foot)
     Jumper_foot["y"] = Jumper_foot["y"] + Jumper_Height
     say "Jumper_foot 坐标在" & Jumper_foot["x"] & "," & Jumper_foot["y"]
 end function
-
 
 
 ' 以此轮郭点为中心, 那个外部点为起始, 顺时针搜索邻点直至搜索到第一个内部点
@@ -407,6 +312,17 @@ Function search_a_contour_ring()
         Exit Function
     End If
 End Function
+
+
+' 轮廓环路径坐标串
+function get_all_contour_ring_pos(gap)
+    dim j, ret_val = ""
+    For j = 0 To contour_rings_pnt step gap
+        ret_val = ret_val & contour_rings_x(j) & "," & contour_rings_y(j) & ";"
+    Next
+    get_all_contour_ring_pos = ret_val
+end function
+
 
 
 ' 显示轮廓环路径
@@ -542,17 +458,6 @@ Function Locate_1st_contour_ring()
 End Function
 
 
-
-
-
-
-
-While (False)
-    ' 点击屏幕坐标(100,100)的点，并持续按住100毫秒（0.1秒）
-    ' Touch x, y, 1
-
-Wend
-
 While (True)
     ' Exit While
 
@@ -621,8 +526,6 @@ While (True)
 Wend
 
 
-
-
 ' 把 HSV_src 的值复制给 HSV_dest
 ' 表变量直接赋值是得到同样的引用, 即两个表引用一同一个数据空间
 Function copyHSV(HSV_src, HSV_dest)
@@ -640,8 +543,8 @@ End Function
 
 Function is_HSV_DIFF(HSV1, HSV2)
     ' HSV 色差半径阀值
-    Dim H_rad = 0.09, V_rad = 5, S_rad = 0.7
-    IF ABS(HSV1["H"] - HSV2["H"]) > H_rad OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > V_rad THEN
+    Dim H_rad = 0.09, V_rad = 15, S_rad = 0.7
+    IF  ( ABS(HSV1["S"] - HSV2["S"]) > 0.2 AND ABS(HSV1["H"] - HSV2["H"]) > H_rad ) OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > S_rad THEN
         is_HSV_DIFF = True
     Else
         is_HSV_DIFF = False
@@ -652,7 +555,7 @@ End Function
 Function is_HSV_DIFF_2(HSV1, HSV2)
     ' HSV 色差半径阀值
     Dim H_rad = 0.09, V_rad = 10, S_rad = 0.7
-    IF ABS(HSV1["H"] - HSV2["H"]) > H_rad OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > V_rad THEN
+    IF ABS(HSV1["H"] - HSV2["H"]) > H_rad OR ABS(HSV1["V"] - HSV2["V"]) > V_rad OR ABS(HSV1["S"] - HSV2["S"]) > S_rad THEN
         is_HSV_DIFF_2 = True
     Else
         is_HSV_DIFF_2 = False
@@ -660,19 +563,10 @@ Function is_HSV_DIFF_2(HSV1, HSV2)
 End Function
 
 
-
-
-
 Function locate_Jumper(Jumper)
     Call locate_Jumper_header(Jumper)
     Jumper["y"] = Jumper["y"] + Jumper_Height
 End Function
-
-
-
-
-
-
 
 
 Function locate_Jumper_header(Jumper_header)
@@ -687,8 +581,6 @@ Function locate_Jumper_header(Jumper_header)
 
     ' Jumper header center color &H7A4B52 = 8014674
     Dim  Jumper_header_center_color = &H7A4B52, Jumper_header_center_color_H_cent = 0.65, Jumper_header_center_color_H_rad = 0.09
-
-
 
 
     ' i 头圆周分割份数用于取色采样点的个数 直径*4 - 角点总数 == 60*4-18(90度的角点数)*4 = 168
@@ -761,12 +653,6 @@ Function locate_Jumper_header(Jumper_header)
 End Function
 
 
-
-
-
-
-
-
 ' 正交十字弦定位法找出 i 头中心
 Function locate_Jumper_header_by_cross_chord(Jumper_header)
 
@@ -826,12 +712,6 @@ Function locate_Jumper_header_by_cross_chord(Jumper_header)
     Jumper_header["x"] = (pos_x["left"] + pos_x["right"]) / 2
     Jumper_header["y"] = (pos_y["up"] + pos_y["down"]) / 2
 End Function
-
-
-
-
-
-
 
 
 ' Jumper header center color 0x7A4B52 = 8014674
@@ -903,7 +783,6 @@ Function RGB2HSV(HSV, v_RGB)
         End If
     End If
 End Function
-
 
 
 Function get_topline(body_x)
@@ -1131,6 +1010,5 @@ Sub debug_msg(something)
         TracePrint something
     end if
 End Sub
-
 
 
